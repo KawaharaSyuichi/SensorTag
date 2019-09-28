@@ -1,0 +1,429 @@
+[
+    {
+        "id": "dfccdfc3.932c2",
+        "type": "tab",
+        "label": "Flow 6",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "84afbde.e92fcc",
+        "type": "switch",
+        "z": "dfccdfc3.932c2",
+        "name": "filter: key2 is true",
+        "property": "payload.json_data.key2",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 293,
+        "y": 483,
+        "wires": [
+            [
+                "468f5396.f4fad4"
+            ]
+        ]
+    },
+    {
+        "id": "bbb013d9.94478",
+        "type": "sensorTag",
+        "z": "dfccdfc3.932c2",
+        "name": "sensorTag",
+        "devices": [
+            "546c0e791a01"
+        ],
+        "temperature": true,
+        "humidity": true,
+        "pressure": true,
+        "magnetometer": true,
+        "magnetometerPeriod": 1000,
+        "accelerometer": true,
+        "accelerometerPeriod": 1000,
+        "gyroscope": true,
+        "gyroscopePeriod": 1000,
+        "luxometer": true,
+        "luxometerPeriod": 1000,
+        "keys": true,
+        "reedrelay": true,
+        "x": 85.5,
+        "y": 392,
+        "wires": [
+            [
+                "f7579115.403d3",
+                "84afbde.e92fcc"
+            ]
+        ]
+    },
+    {
+        "id": "f7579115.403d3",
+        "type": "switch",
+        "z": "dfccdfc3.932c2",
+        "name": "filter: key1 is true",
+        "property": "payload.json_data.key1",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 293.5,
+        "y": 323,
+        "wires": [
+            [
+                "4882104d.9f5ab8"
+            ]
+        ]
+    },
+    {
+        "id": "468f5396.f4fad4",
+        "type": "function",
+        "z": "dfccdfc3.932c2",
+        "name": "calculate delta key2",
+        "func": "var T_K1_key2 = context.get('T_K1_key2') || 0;\nvar delta_T_key2 = 0;\nvar tstamp_now = msg.payload.tstamp.$date / 1000;\n\nif (T_K1_key2 === 0){\n    delta_T_key2 = 1/tstamp_now;\n}else{\n    delta_T_key2 = 1/(tstamp_now-T_K1_key2);\n}\n\nmsg.payload.delta_T_key2 = delta_T_key2;\nT_K1_key2 = tstamp_now;\n\ncontext.set('T_K1_key2',T_K1_key2);\ncontext.set('delta_T_key2',delta_T_key2);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 541,
+        "y": 482,
+        "wires": [
+            [
+                "9e2411fe.bc215",
+                "54fff043.6dc658"
+            ]
+        ]
+    },
+    {
+        "id": "4882104d.9f5ab8",
+        "type": "function",
+        "z": "dfccdfc3.932c2",
+        "name": "calculate delta key1",
+        "func": "var T_K1_key1 = context.get('T_K1_key1') || 0;\nvar delta_T_key1 = 0;\nvar tstamp_now = msg.payload.tstamp.$date / 1000;\n\nif (T_K1_key1 === 0){\n    delta_T_key1 = 1/ tstamp_now;\n}else{\n    delta_T_key1 = 1/ (tstamp_now-T_K1_key1);\n}\n\nmsg.payload.delta_T_key1=delta_T_key1;\nT_K1_key1 = tstamp_now;\n\ncontext.set('T_K1_key1',T_K1_key1);\ncontext.set('delta_T_key1',delta_T_key1);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 539.5,
+        "y": 323,
+        "wires": [
+            [
+                "40b77157.5fc88",
+                "d1fea9ed.c55c2"
+            ]
+        ]
+    },
+    {
+        "id": "40b77157.5fc88",
+        "type": "change",
+        "z": "dfccdfc3.932c2",
+        "name": "extract delta key1",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.delta_T_key1",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "key1_delta_topic",
+                "pt": "msg",
+                "to": "key1 delta_T",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 767,
+        "y": 295,
+        "wires": [
+            [
+                "43c13f67.4d57",
+                "f62fff24.5f46c8"
+            ]
+        ]
+    },
+    {
+        "id": "d1fea9ed.c55c2",
+        "type": "change",
+        "z": "dfccdfc3.932c2",
+        "name": "extract $date",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.tstamp.$date",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tstamp_topic",
+                "pt": "msg",
+                "to": "tstamp",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 746,
+        "y": 347,
+        "wires": [
+            [
+                "4286f7c.5bd0c88"
+            ]
+        ]
+    },
+    {
+        "id": "43c13f67.4d57",
+        "type": "ui_text",
+        "z": "dfccdfc3.932c2",
+        "group": "22e96ee5.88ff62",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "{{msg.key1_delta_topic}}",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 955.5,
+        "y": 247,
+        "wires": []
+    },
+    {
+        "id": "f62fff24.5f46c8",
+        "type": "ui_chart",
+        "z": "dfccdfc3.932c2",
+        "name": "",
+        "group": "22e96ee5.88ff62",
+        "order": 3,
+        "width": "6",
+        "height": "4",
+        "label": "delta_T_key1",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "20",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "1",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "x": 984.5,
+        "y": 295,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "4286f7c.5bd0c88",
+        "type": "ui_text",
+        "z": "dfccdfc3.932c2",
+        "group": "22e96ee5.88ff62",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "{{msg.tstamp_topic}}",
+        "format": "{{msg.payload | date:'HH:mm:ss:sss'}}",
+        "layout": "row-spread",
+        "x": 953,
+        "y": 348,
+        "wires": []
+    },
+    {
+        "id": "9e2411fe.bc215",
+        "type": "change",
+        "z": "dfccdfc3.932c2",
+        "name": "extract delta key2",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.delta_T_key2",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "key2_delta_topic",
+                "pt": "msg",
+                "to": "delta_T_key2",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 774,
+        "y": 460,
+        "wires": [
+            [
+                "b87b14ca.78a6b8",
+                "23a7c7c.dfdc7b8"
+            ]
+        ]
+    },
+    {
+        "id": "54fff043.6dc658",
+        "type": "change",
+        "z": "dfccdfc3.932c2",
+        "name": "extract $date",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.tstamp.$date",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tstamp_topic",
+                "pt": "msg",
+                "to": "tstamp",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 753,
+        "y": 512,
+        "wires": [
+            [
+                "e5dafa63.a2952"
+            ]
+        ]
+    },
+    {
+        "id": "b87b14ca.78a6b8",
+        "type": "ui_text",
+        "z": "dfccdfc3.932c2",
+        "group": "51350461.3082a4",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "{{msg.key2_delta_topic}}",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 962.5,
+        "y": 412,
+        "wires": []
+    },
+    {
+        "id": "23a7c7c.dfdc7b8",
+        "type": "ui_chart",
+        "z": "dfccdfc3.932c2",
+        "name": "",
+        "group": "51350461.3082a4",
+        "order": 3,
+        "width": "6",
+        "height": "4",
+        "label": "delta_T_key2",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "20",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "1",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#ff0000",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "x": 991.5,
+        "y": 460,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "e5dafa63.a2952",
+        "type": "ui_text",
+        "z": "dfccdfc3.932c2",
+        "group": "51350461.3082a4",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "{{msg.tstamp_topic}} ",
+        "format": "{{msg.payload | date:'HH:mm:ss:sss'}}",
+        "layout": "row-spread",
+        "x": 960,
+        "y": 513,
+        "wires": []
+    },
+    {
+        "id": "22e96ee5.88ff62",
+        "type": "ui_group",
+        "z": "",
+        "name": "key1",
+        "tab": "cf67ec26.dba7d8",
+        "order": 1,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "51350461.3082a4",
+        "type": "ui_group",
+        "z": "",
+        "name": "key2",
+        "tab": "cf67ec26.dba7d8",
+        "order": 2,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "cf67ec26.dba7d8",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Flow 6",
+        "icon": "dashboard",
+        "order": 6
+    }
+]

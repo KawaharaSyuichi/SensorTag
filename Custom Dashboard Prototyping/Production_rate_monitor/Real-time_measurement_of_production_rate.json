@@ -1,0 +1,237 @@
+[
+    {
+        "id": "ea02e447.c596a8",
+        "type": "tab",
+        "label": "Flow 7",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "319a0147.9b4ff6",
+        "type": "switch",
+        "z": "ea02e447.c596a8",
+        "name": "filter: key1 is true",
+        "property": "payload.json_data.key1",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 269,
+        "y": 375,
+        "wires": [
+            [
+                "370c7986.74b16e"
+            ]
+        ]
+    },
+    {
+        "id": "52d6fc3c.c261cc",
+        "type": "sensorTag",
+        "z": "ea02e447.c596a8",
+        "name": "sensorTag",
+        "devices": [
+            "546c0e791a01"
+        ],
+        "temperature": true,
+        "humidity": true,
+        "pressure": true,
+        "magnetometer": true,
+        "magnetometerPeriod": 1000,
+        "accelerometer": true,
+        "accelerometerPeriod": 1000,
+        "gyroscope": true,
+        "gyroscopePeriod": 1000,
+        "luxometer": true,
+        "luxometerPeriod": 1000,
+        "keys": true,
+        "reedrelay": true,
+        "x": 89,
+        "y": 374,
+        "wires": [
+            [
+                "319a0147.9b4ff6"
+            ]
+        ]
+    },
+    {
+        "id": "370c7986.74b16e",
+        "type": "function",
+        "z": "ea02e447.c596a8",
+        "name": "calculate delta",
+        "func": "var T_K1_key1 = context.get('T_K1_key1') || 0;\nvar delta_T_key1 = 0;\nvar tstamp_now = msg.payload.tstamp.$date/1000;//to change [ms] to [s]\n\nif (T_K1_key1 === 0){\n    delta_T_key1 = 1/tstamp_now;\n}else{\n    delta_T_key1 = 1/(tstamp_now-T_K1_key1);\n}\n\nmsg.payload.delta_T_key1 = delta_T_key1;\nT_K1_key1 = tstamp_now;\n\ncontext.set('T_K1_key1',T_K1_key1);\ncontext.set('delta_T_key1',delta_T_key1);\n\nconsole.log(msg.payload.tstamp.$date);\nconsole.log(typeof(msg.payload.tstamp.$date));\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 487,
+        "y": 375,
+        "wires": [
+            [
+                "4e44ca0b.8e959c",
+                "d8fbd7ae.569778"
+            ]
+        ]
+    },
+    {
+        "id": "4e44ca0b.8e959c",
+        "type": "change",
+        "z": "ea02e447.c596a8",
+        "name": "extract delta key1",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.delta_T_key1",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "key1_delta_topic",
+                "pt": "msg",
+                "to": "key1 delta_T",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 702.5,
+        "y": 351,
+        "wires": [
+            [
+                "966824f8.64318",
+                "c45460b7.9dbf28"
+            ]
+        ]
+    },
+    {
+        "id": "d8fbd7ae.569778",
+        "type": "change",
+        "z": "ea02e447.c596a8",
+        "name": "extract $date",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.tstamp.$date",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tstamp_topic",
+                "pt": "msg",
+                "to": "key1 tstamp",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 681.5,
+        "y": 401,
+        "wires": [
+            [
+                "bdb3785f.48dca"
+            ]
+        ]
+    },
+    {
+        "id": "966824f8.64318",
+        "type": "ui_text",
+        "z": "ea02e447.c596a8",
+        "group": "ad0ebaa7.104cd8",
+        "order": 14,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": " {{msg.key1_delta_topic}}",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 880,
+        "y": 309,
+        "wires": []
+    },
+    {
+        "id": "c45460b7.9dbf28",
+        "type": "ui_chart",
+        "z": "ea02e447.c596a8",
+        "name": "",
+        "group": "ad0ebaa7.104cd8",
+        "order": 15,
+        "width": "6",
+        "height": "4",
+        "label": "key1 delta_T",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "20",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "1",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "x": 897,
+        "y": 350,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "bdb3785f.48dca",
+        "type": "ui_text",
+        "z": "ea02e447.c596a8",
+        "group": "ad0ebaa7.104cd8",
+        "order": 13,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": " {{msg.tstamp_topic}}",
+        "format": "{{msg.payload | date:'HH:mm:ss:sss'}}",
+        "layout": "row-spread",
+        "x": 878.5,
+        "y": 401,
+        "wires": []
+    },
+    {
+        "id": "ad0ebaa7.104cd8",
+        "type": "ui_group",
+        "z": "",
+        "name": "Key1",
+        "tab": "22f93828.73fb08",
+        "order": 1,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "22f93828.73fb08",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Flow7",
+        "icon": "dashboard",
+        "order": 5
+    }
+]
