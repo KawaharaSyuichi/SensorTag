@@ -23,3 +23,21 @@ This workshop deals with '__Industrial__ Internet of Things(IIoT)', a promising 
 * Very useful for prototyping of IoT geteways
 * Node-RED User Group Japan : https://nodered.jp/
 * Node-RED Github : https://github.com/node-red
+
+
+## Startup screen
+![sudo_node-red](https://user-images.githubusercontent.com/26127488/67363484-66d42200-f5a8-11e9-9594-4c7521bdd32b.png)
+
+## Issue Result
+# Dashbord
+![scenario2_dashboard](https://user-images.githubusercontent.com/26127488/67362801-d9440280-f5a6-11e9-8378-c28285b8ee0b.png)
+
+# Dashbord Result
+![scenario2_ui](https://user-images.githubusercontent.com/26127488/67363324-15c42e00-f5a8-11e9-92f2-1560523c801f.png)
+
+## Extension Issue Result
+# Dashbord
+![scenario2_ex_dashboard](https://user-images.githubusercontent.com/26127488/67363287-0349f480-f5a8-11e9-85d1-7d9b8e91d4e2.png)
+
+# Dashbord Result
+![scenario2_ex_ui](https://user-images.githubusercontent.com/26127488/67363337-1a88e200-f5a8-11e9-9305-4dcd3c7b88ad.png)
